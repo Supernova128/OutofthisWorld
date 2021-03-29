@@ -14,7 +14,7 @@ Stretch Goals
 
 ## Video Walkthrough
 
-<img src='Final.gif'\>
+<img src='Final.gif'/>
 
 ## Notes
 
