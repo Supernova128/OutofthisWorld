@@ -2,6 +2,10 @@
 
 *Out of this World* is a space apps that tells info about space using NASA's APIs. 
 
+Steps to take
+
+[X] Set up issuses to complete 
+
 Functionality planned 
 
 [] Get the astonomy picture of the day
