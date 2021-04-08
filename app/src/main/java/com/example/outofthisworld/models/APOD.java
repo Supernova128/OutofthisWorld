@@ -26,7 +26,7 @@ public class APOD {
     public APOD(JSONObject jsonObject) throws JSONException {
         APOD apod = new APOD();
         apod.date = jsonObject.getString("date");
-        apod.explanation = jsonObject.getString("explaination");
+        apod.explanation = jsonObject.getString("explanation");
         apod.url = jsonObject.getString("url");
         apod.title = jsonObject.getString("title");
         apod.type = jsonObject.getString("media_type");
