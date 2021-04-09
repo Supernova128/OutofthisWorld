@@ -1,4 +1,4 @@
-package com.example.outofthisworld.models;
+package com.example.outofthisworld.Models;
 
 import org.json.JSONArray;
 import org.json.JSONException;
