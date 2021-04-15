@@ -18,7 +18,7 @@ Stretch Goals
 
 ## Video Walkthrough
 
-<img src='Final.gif'/>
+<https://github.com/dfc5457/OutofthisWorld/blob/main/Walkthrough.gif'/>
 
 ## Notes
 
