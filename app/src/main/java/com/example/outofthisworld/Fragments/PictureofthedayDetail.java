@@ -1,65 +1,94 @@
 package com.example.outofthisworld.Fragments;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
+import com.bumptech.glide.Glide;
+import com.example.outofthisworld.BuildConfig;
+import com.example.outofthisworld.Models.APOD;
 import com.example.outofthisworld.R;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubePlayerView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PictureofthedayDetail#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class PictureofthedayDetail extends Fragment {
+import org.parceler.Parcels;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class PictureofthedayDetail extends YouTubePlayerSupportFragment {
+    TextView tvExplanation;
+    TextView tvCopyright;
+    TextView tvTitle;
+    YouTubePlayerView youTubePlayerView;
+    ImageView ivPicture;
 
-    public PictureofthedayDetail() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PictureofthedayDetail.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PictureofthedayDetail newInstance(String param1, String param2) {
-        PictureofthedayDetail fragment = new PictureofthedayDetail();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    APOD apod;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_pictureoftheday_detail, container, false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        tvExplanation = view.findViewById(R.id.tvOverview);
+        tvTitle = view.findViewById(R.id.tvTitle);
+        tvCopyright = view.findViewById(R.id.tvCopyright);
+        ivPicture = view.findViewById(R.id.ivPicture2);
+        youTubePlayerView = view.findViewById(R.id.player);
+        // Set values to views
+        tvTitle.setText(apod.getTitle());
+        tvExplanation.setText(apod.getExplanation());
+        tvCopyright.setText(apod.getCopyright());
+
+        if (apod.type == "video") {
+            youTubePlayerView.setVisibility(view.VISIBLE);
+            ivPicture.setVisibility(View.GONE);
+
+
+        }
+        else if (apod.type == "image") {
+            youTubePlayerView.setVisibility(view.GONE);
+            ivPicture.setVisibility(View.VISIBLE);
+            Glide.with(getContext())
+                    .load(apod.url)
+                    .placeholder(Drawable.createFromPath("http://via.placeholder.com/300.png"))
+                    .into(ivPicture);
+        }
+
+    }
+
+    private void initializeYoutube(String yturl)  {
+        youTubePlayerView.initialize(BuildConfig.Youtube_Key, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                Log.d("DetailActivity", "onInitializationSuccess");
+                youTubePlayer.cueVideo(yturl);
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.d("DetailActivity", "onInitializationFailure");
+            }
+        });
+    };
+
+    public void setArguments(Parcelable arguments) {
+        this.apod = Parcels.unwrap(arguments);
     }
 }
