@@ -2,6 +2,7 @@ package com.example.outofthisworld.Adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.example.outofthisworld.Models.APOD;
 import com.example.outofthisworld.R;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
 
@@ -65,13 +68,23 @@ public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
         public void bind(APOD apod) {
             tvTitle.setText(apod.getTitle());
             tvDate.setText(apod.getDate());
+            String type = apod.getType();
             String imageURL;
-            imageURL = apod.getUrl();
+            if ("image".equals(type)){
+                imageURL = apod.getUrl();
+            }
+            else if ("video".equals(type)){
+                imageURL = getYoutubeThumbnailUrlFromVideoUrl(apod.getUrl());
+                Log.i("APODAdapter",imageURL);
+            }
+            else {
+                imageURL = "https://via.placeholder.com/300.png";
+            }
             Glide.with(context)
                     .load(imageURL)
-                    .placeholder(Drawable.createFromPath("http://via.placeholder.com/300.png"))
+                    .placeholder(Drawable.createFromPath("https://via.placeholder.com/300.png"))
                     .into(ivPoster);
-                /* Not working
+            /* Not working
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -85,6 +98,21 @@ public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
             });
             */
         }
-
+        public String getYoutubeThumbnailUrlFromVideoUrl(String videoUrl) {
+            return "https://img.youtube.com/vi/"+getYoutubeVideoIdFromUrl(videoUrl) + "/0.jpg";
+        }
+        public String getYoutubeVideoIdFromUrl(String inUrl) {
+            inUrl = inUrl.replace("&feature=youtu.be", "");
+            if (inUrl.toLowerCase().contains("youtu.be")) {
+                return inUrl.substring(inUrl.lastIndexOf("/") + 1);
+            }
+            String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+            Pattern compiledPattern = Pattern.compile(pattern);
+            Matcher matcher = compiledPattern.matcher(inUrl);
+            if (matcher.find()) {
+                return matcher.group();
+            }
+            return null;
+        }
     }
 }
