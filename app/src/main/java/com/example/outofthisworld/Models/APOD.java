@@ -1,5 +1,7 @@
 package com.example.outofthisworld.Models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,16 +27,16 @@ public class APOD {
     // Method to get one apod from JSON object
     public APOD(JSONObject jsonObject) throws JSONException {
         APOD apod = new APOD();
-        apod.date = jsonObject.getString("date");
-        apod.explanation = jsonObject.getString("explanation");
-        apod.url = jsonObject.getString("url");
-        apod.title = jsonObject.getString("title");
-        apod.type = jsonObject.getString("media_type");
+        date = jsonObject.getString("date");
+        explanation = jsonObject.getString("explanation");
+        url = jsonObject.getString("url");
+        title = jsonObject.getString("title");
+        type = jsonObject.getString("media_type");
         if (jsonObject.has("copyright")) {
-            apod.copyright = jsonObject.getString("copyright");
+            copyright = jsonObject.getString("copyright");
         }
         else {
-            apod.copyright =  "Public Domain";
+            copyright =  "Public Domain";
         }
     }
 
@@ -42,7 +44,9 @@ public class APOD {
     public static List<APOD> fromJsonArray(JSONArray apodJsonArray) throws JSONException {
         List<APOD> apods = new ArrayList<>();
         for (int i = 0; i <apodJsonArray.length(); i++) {
-            apods.add(new APOD(apodJsonArray.getJSONObject(i)));
+            APOD apod = new APOD(apodJsonArray.getJSONObject(i));
+            Log.i("APOD",apod.getDate());
+            apods.add(apod);
         }
         return apods;
     }

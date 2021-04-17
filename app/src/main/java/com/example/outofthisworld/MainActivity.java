@@ -1,6 +1,7 @@
 package com.example.outofthisworld;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -15,6 +16,8 @@ import com.example.outofthisworld.Fragments.PictureofthedayScrollable;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
+
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.AOPD:
                 fragmentClass = PictureofthedayScrollable.class;
+                Log.i(TAG,"Moved to Pic of day");
                 break;
             default:
                 fragmentClass = PictureofthedayScrollable.class;

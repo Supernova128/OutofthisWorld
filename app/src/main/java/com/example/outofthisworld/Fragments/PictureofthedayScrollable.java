@@ -1,65 +1,113 @@
 package com.example.outofthisworld.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.outofthisworld.Adapters.APODAdapter;
+import com.example.outofthisworld.BuildConfig;
+import com.example.outofthisworld.Models.APOD;
 import com.example.outofthisworld.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PictureofthedayScrollable#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import okhttp3.Headers;
+
+
 public class PictureofthedayScrollable extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String APIURL = "https://api.nasa.gov/planetary/apod?api_key=" + BuildConfig.NASA_KEY;
+    public static final String TAG = "FragAPOD";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private RecyclerView rvPics;
+    protected APODAdapter adapter;
+    protected List<APOD> APODs;
+    protected SwipeRefreshLayout swipeContainer;
+    protected String Enddate;
+    protected String Startdate;
 
     public PictureofthedayScrollable() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Pictureoftheday.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PictureofthedayScrollable newInstance(String param1, String param2) {
-        PictureofthedayScrollable fragment = new PictureofthedayScrollable();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pictureoftheday, container, false);
+    }
+
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rvPics = view.findViewById(R.id.rvPictures);
+        APODs = new ArrayList<>();
+        adapter = new APODAdapter(getContext(),APODs);
+        rvPics.setAdapter(adapter);
+        rvPics.setLayoutManager(new LinearLayoutManager(getContext()));
+        try {
+            Getmorepics();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    protected void Getmorepics() throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        if (APODs.isEmpty()) {
+            Enddate = df.format(cal.getTime());
+        } else {
+            Enddate = APODs.get(APODs.size() - 1).getDate();
+            cal.setTime(df.parse(Enddate));
+            cal.add(Calendar.DATE, -1);
+        }
+        cal.add(Calendar.DATE, -15);
+        Startdate = df.format(cal.getTime());
+        AsyncHttpClient client = new AsyncHttpClient();
+        String FullURL = APIURL + "&start_date=" + Startdate + "&end_date=" + Enddate;
+        client.get(FullURL, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Headers headers, JSON json) {
+                JSONArray results = json.jsonArray;
+                try {
+                    APODs.addAll(APOD.fromJsonArray(results));
+                    adapter.notifyDataSetChanged();
+                    Log.i("APODFrag", String.valueOf(APODs.size()));
+                    return;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e(TAG,"Fail");
+                    return;
+                }
+            }
+            @Override
+            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
+                Log.e(TAG,s);
+                return;
+            }
+        });
     }
 }
