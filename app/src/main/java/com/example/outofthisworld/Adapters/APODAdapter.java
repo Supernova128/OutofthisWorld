@@ -58,7 +58,6 @@ public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvName);
             tvDate = itemView.findViewById(R.id.tvDate);
-            tvAuthor = itemView.findViewById(R.id.tvAuthor);
             ivPoster = itemView.findViewById(R.id.ivPicture);
             container = itemView.findViewById(R.id.container);
         }
