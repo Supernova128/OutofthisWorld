@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.PictureofthedayDetail">
 
-
-    <com.google.android.youtube.player.YouTubePlayerView
-        android:id="@+id/player"
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="wrap_content"
+        app:showFullScreenButton="true" />
+
 
     <ImageView
         android:id="@+id/ivPicture2"

@@ -2,6 +2,7 @@ package com.example.outofthisworld.Adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.outofthisworld.Fragments.PictureofthedayDetail;
 import com.example.outofthisworld.Models.APOD;
 import com.example.outofthisworld.R;
 
+import org.parceler.Parcels;
+
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
 
@@ -84,35 +88,22 @@ public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
                     .load(imageURL)
                     .placeholder(Drawable.createFromPath("https://via.placeholder.com/300.png"))
                     .into(ivPoster);
-            /* Not working
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PictureofthedayDetail fragment;
+                    Fragment fragment;
                     fragment = new PictureofthedayDetail();
                     Bundle b = new Bundle();
-                    fragment.setArguments(Parcels.wrap(apod));
+                    b.putParcelable("apod",Parcels.wrap(apod));
+                    fragment.setArguments(b);
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
                 }
             });
-            */
         }
-        public String getYoutubeThumbnailUrlFromVideoUrl(String videoUrl) {
-            return "https://img.youtube.com/vi/"+getYoutubeVideoIdFromUrl(videoUrl) + "/0.jpg";
+        public String getYoutubeThumbnailUrlFromVideoUrl(String id) {
+            return "https://img.youtube.com/vi/"+id+ "/0.jpg";
         }
-        public String getYoutubeVideoIdFromUrl(String inUrl) {
-            inUrl = inUrl.replace("&feature=youtu.be", "");
-            if (inUrl.toLowerCase().contains("youtu.be")) {
-                return inUrl.substring(inUrl.lastIndexOf("/") + 1);
-            }
-            String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
-            Pattern compiledPattern = Pattern.compile(pattern);
-            Matcher matcher = compiledPattern.matcher(inUrl);
-            if (matcher.find()) {
-                return matcher.group();
-            }
-            return null;
-        }
+
     }
 }

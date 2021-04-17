@@ -9,6 +9,8 @@ import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Parcel
 public class APOD {
@@ -38,6 +40,10 @@ public class APOD {
         else {
             copyright =  "Public Domain";
         }
+        if ("video".equals(type)){
+            url = getYoutubeVideoIdFromUrl(url);
+        }
+
     }
 
     // Method to get multiple APODs from list of JSON objects
@@ -50,7 +56,19 @@ public class APOD {
         }
         return apods;
     }
-
+    public String getYoutubeVideoIdFromUrl(String inUrl) {
+        inUrl = inUrl.replace("&feature=youtu.be", "");
+        if (inUrl.toLowerCase().contains("youtu.be")) {
+            return inUrl.substring(inUrl.lastIndexOf("/") + 1);
+        }
+        String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+        Pattern compiledPattern = Pattern.compile(pattern);
+        Matcher matcher = compiledPattern.matcher(inUrl);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
     public String getCopyright() {
         return copyright;
     }
