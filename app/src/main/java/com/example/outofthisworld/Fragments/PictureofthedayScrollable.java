@@ -45,6 +45,8 @@ public class PictureofthedayScrollable extends Fragment {
     protected SwipeRefreshLayout swipeContainer;
     protected String Enddate;
     protected String Startdate;
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
     public PictureofthedayScrollable() {
         // Required empty public constructor
@@ -64,8 +66,19 @@ public class PictureofthedayScrollable extends Fragment {
         rvPics = view.findViewById(R.id.rvPictures);
         APODs = new ArrayList<>();
         adapter = new APODAdapter(getContext(),APODs);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+
         rvPics.setAdapter(adapter);
-        rvPics.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvPics.setLayoutManager(layoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) throws ParseException {
+                Log.i(TAG,"Loading More Pics");
+                Getmorepics();
+            }
+        };
+        rvPics.addOnScrollListener(scrollListener);
         try {
             Getmorepics();
         } catch (ParseException e) {
@@ -83,6 +96,7 @@ public class PictureofthedayScrollable extends Fragment {
             Enddate = APODs.get(APODs.size() - 1).getDate();
             cal.setTime(df.parse(Enddate));
             cal.add(Calendar.DATE, -1);
+            Enddate = df.format(cal.getTime());
         }
         cal.add(Calendar.DATE, -15);
         Startdate = df.format(cal.getTime());
@@ -95,7 +109,7 @@ public class PictureofthedayScrollable extends Fragment {
                 try {
                     APODs.addAll(APOD.fromJsonArray(results));
                     adapter.notifyDataSetChanged();
-                    Log.i("APODFrag", String.valueOf(APODs.size()));
+                    Log.i(TAG, String.valueOf(APODs.size()));
                     return;
                 } catch (JSONException e) {
                     e.printStackTrace();

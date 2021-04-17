@@ -71,6 +71,20 @@ public class APODAdapter extends RecyclerView.Adapter<APODAdapter.ViewHolder>{
                     .load(imageURL)
                     .placeholder(Drawable.createFromPath("http://via.placeholder.com/300.png"))
                     .into(ivPoster);
+                /* Not working
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PictureofthedayDetail fragment;
+                    fragment = new PictureofthedayDetail();
+                    Bundle b = new Bundle();
+                    fragment.setArguments(Parcels.wrap(apod));
+                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+                }
+            });
+            */
         }
+
     }
 }
