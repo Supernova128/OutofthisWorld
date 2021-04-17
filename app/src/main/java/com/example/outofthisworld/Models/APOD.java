@@ -43,7 +43,7 @@ public class APOD {
     // Method to get multiple APODs from list of JSON objects
     public static List<APOD> fromJsonArray(JSONArray apodJsonArray) throws JSONException {
         List<APOD> apods = new ArrayList<>();
-        for (int i = 0; i <apodJsonArray.length(); i++) {
+        for (int i = apodJsonArray.length() - 1; i >= 0; i--) {
             APOD apod = new APOD(apodJsonArray.getJSONObject(i));
             Log.i("APOD",apod.getDate());
             apods.add(apod);
