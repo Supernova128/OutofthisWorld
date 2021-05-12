@@ -33,27 +33,29 @@ public class PictureofthedayDetail extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pictureoftheday_detail, container, false);
+        APOD apod = Parcels.unwrap(getArguments().getParcelable("apod"));
+        if ("video".equals(apod.getType())) {
+            return inflater.inflate(R.layout.fragment_pictureoftheday_detailvideo, container, false);
+        } else {
+            return inflater.inflate(R.layout.fragment_pictureoftheday_detailimage, container, false);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        APOD apod = Parcels.unwrap(getArguments().getParcelable("apod"));
         tvExplanation = view.findViewById(R.id.tvOverview);
         tvTitle = view.findViewById(R.id.tvTitle);
         tvCopyright = view.findViewById(R.id.tvCopyright);
-        ivPicture = view.findViewById(R.id.ivPicture2);
-
-        APOD apod = Parcels.unwrap(getArguments().getParcelable("apod"));
         tvTitle.setText(apod.getTitle());
         tvExplanation.setText(apod.getExplanation());
         tvCopyright.setText(apod.getCopyright());
 
-        youTubePlayer = view.findViewById(R.id.youtube_player_view);
-        getLifecycle().addObserver(youTubePlayer);
+
 
         if ("video".equals(apod.getType())) {
-            youTubePlayer.setVisibility(view.VISIBLE);
-            ivPicture.setVisibility(View.GONE);
+            youTubePlayer = view.findViewById(R.id.youtube_player_view);
+            getLifecycle().addObserver(youTubePlayer);
             youTubePlayer.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
@@ -63,8 +65,7 @@ public class PictureofthedayDetail extends Fragment {
         });
         }
         else if ("image".equals(apod.getType())) {
-            youTubePlayer.setVisibility(view.GONE);
-            ivPicture.setVisibility(View.VISIBLE);
+            ivPicture = view.findViewById(R.id.ivPicture2);
             Glide.with(view.getContext())
                     .load(apod.getUrl())
                     .placeholder(Drawable.createFromPath("http://via.placeholder.com/300.png"))

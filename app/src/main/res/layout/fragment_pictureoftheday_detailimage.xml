@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragments.PictureofthedayDetail">
-
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/youtube_player_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:showFullScreenButton="true" />
-
 
     <ImageView
         android:id="@+id/ivPicture2"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="300dp"
+        android:contentDescription="APOD" />
+
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="305dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:textSize="14sp" />
 
@@ -29,8 +26,6 @@
         android:id="@+id/tvCopyright"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvTitle"
-        android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:textSize="14sp" />
@@ -39,8 +34,6 @@
         android:id="@+id/tvOverview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvCopyright"
-        android:layout_marginTop="5dp"
-        tools:text="This is a great movie about the past" />
+        android:layout_marginTop="5dp" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -16,7 +16,6 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField("String", "NASA_KEY", apikeyProperties['NASA_KEY'])
-        buildConfigField("String", "Youtube_Key", apikeyProperties['Youtube_Key'])
     }
 
     buildTypes {
